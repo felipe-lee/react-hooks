@@ -1,8 +1,8 @@
 import * as React from 'react'
 import {render, screen} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import App from '../final/02'
-// import App from '../exercise/02'
+// import App from '../final/02'
+import App from '../exercise/02'
 
 afterEach(() => {
   window.localStorage.removeItem('name')
@@ -10,7 +10,11 @@ afterEach(() => {
 
 test('App works', () => {
   const {rerender} = render(<App />)
-  userEvent.type(screen.getByRole('textbox', {name: /name/i}), 'bob')
+
+  const nameInput = screen.getByRole('textbox', {name: /name/i})
+
+  userEvent.clear(nameInput)
+  userEvent.type(nameInput, 'bob')
   const lsName = window.localStorage.getItem('name')
 
   // extra credit 4 serializes the value in localStorage so there's a bit of a
