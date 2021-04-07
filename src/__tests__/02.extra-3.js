@@ -2,7 +2,7 @@ import * as React from 'react'
 import {render, screen} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 // import App from '../final/02'
-import App from '../exercise/02'
+import App from '../exercise/02.extra-3'
 
 afterEach(() => {
   window.localStorage.removeItem('name')
@@ -15,11 +15,11 @@ test('App works', () => {
 
   userEvent.clear(nameInput)
   userEvent.type(nameInput, 'bob')
-  const lsName = window.localStorage.getItem('person')
+  const lsName = window.localStorage.getItem('name')
 
   // extra credit 4 serializes the value in localStorage so there's a bit of a
   // variation here.
-  const isSerialized = lsName === '{"name":"bob"}'
+  const isSerialized = lsName === '"bob"'
   if (isSerialized) {
     expect(screen.getByText(/hello.*bob/i)).toBeInTheDocument()
   } else if (lsName === 'bob') {
@@ -31,10 +31,7 @@ test('App works', () => {
   }
 
   // make sure it's initialized properly
-  window.localStorage.setItem(
-    'person',
-    isSerialized ? '{"name":"jill"}' : 'jill',
-  )
+  window.localStorage.setItem('name', isSerialized ? '"jill"' : 'jill')
   rerender(<App key="new" />)
   const greetingText = screen.getByText(/hello/i).textContent
   if (!greetingText.includes('jill')) {
