@@ -10,9 +10,8 @@ import {
   PokemonInfoFallback,
 } from '../pokemon'
 
-function PokemonInfo({pokemonName}) {
+function PokemonInfo ({pokemonName}) {
   const [pokemon, setPokemon] = React.useState(null)
-  const [error, setError] = React.useState(null)
 
   React.useEffect(() => {
     if (!pokemonName) {
@@ -20,23 +19,13 @@ function PokemonInfo({pokemonName}) {
     }
 
     setPokemon(null)
-    setError(null)
 
-    fetchPokemon(pokemonName)
-      .then(pokemonData => {
-        setPokemon(pokemonData)
-      })
-      .catch(error => setError(error))
+    fetchPokemon(pokemonName).then(pokemonData => {
+      setPokemon(pokemonData)
+    })
   }, [pokemonName])
 
-  if (error) {
-    return (
-      <div role="alert">
-        There was an error:{' '}
-        <pre style={{whiteSpace: 'normal'}}>{error.message}</pre>
-      </div>
-    )
-  } else if (!pokemonName) {
+  if (!pokemonName) {
     return 'Submit a pokemon'
   } else if (!pokemon) {
     return <PokemonInfoFallback name={pokemonName} />
