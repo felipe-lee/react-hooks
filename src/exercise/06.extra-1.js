@@ -10,13 +10,7 @@ import {
   PokemonInfoFallback,
 } from '../pokemon'
 
-const IDLE = 'idle'
-const PENDING = 'pending'
-const RESOLVED = 'resolved'
-const REJECTED = 'rejected'
-
 function PokemonInfo({pokemonName}) {
-  const [status, setStatus] = React.useState(IDLE)
   const [pokemon, setPokemon] = React.useState(null)
   const [error, setError] = React.useState(null)
 
@@ -25,42 +19,29 @@ function PokemonInfo({pokemonName}) {
       return
     }
 
-    setStatus(PENDING)
     setPokemon(null)
     setError(null)
 
     fetchPokemon(pokemonName)
       .then(pokemonData => {
         setPokemon(pokemonData)
-        setStatus(RESOLVED)
       })
-      .catch(error => {
-        setError(error)
-        setStatus(REJECTED)
-      })
+      .catch(error => setError(error))
   }, [pokemonName])
 
-  switch (status) {
-    case IDLE: {
-      return 'Submit a pokemon'
-    }
-    case PENDING: {
-      return <PokemonInfoFallback name={pokemonName} />
-    }
-    case RESOLVED: {
-      return <PokemonDataView pokemon={pokemon} />
-    }
-    case REJECTED: {
-      return (
-        <div role="alert">
-          There was an error:{' '}
-          <pre style={{whiteSpace: 'normal'}}>{error.message}</pre>
-        </div>
-      )
-    }
-    default: {
-      throw new Error(`Unhandled status: ${status}`)
-    }
+  if (error) {
+    return (
+      <div role="alert">
+        There was an error:{' '}
+        <pre style={{whiteSpace: 'normal'}}>{error.message}</pre>
+      </div>
+    )
+  } else if (!pokemonName) {
+    return 'Submit a pokemon'
+  } else if (!pokemon) {
+    return <PokemonInfoFallback name={pokemonName} />
+  } else {
+    return <PokemonDataView pokemon={pokemon} />
   }
 }
 
