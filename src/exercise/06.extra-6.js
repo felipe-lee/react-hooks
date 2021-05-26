@@ -20,7 +20,7 @@ function PokemonInfo({pokemonName}) {
   const [state, setState] = React.useState({
     error: null,
     pokemon: null,
-    status: pokemonName ? PENDING : IDLE,
+    status: IDLE,
   })
 
   React.useEffect(() => {
@@ -58,12 +58,11 @@ function PokemonInfo({pokemonName}) {
   }
 }
 
-const PokemonFallbackComponent = ({error, resetErrorBoundary}) => {
+const PokemonFallbackComponent = ({error}) => {
   return (
     <div role="alert">
       There was an error:{' '}
       <pre style={{whiteSpace: 'normal'}}>{error.message}</pre>
-      <button onClick={resetErrorBoundary}>Try Again</button>
     </div>
   )
 }
@@ -81,8 +80,8 @@ function App() {
       <hr />
       <div className="pokemon-info">
         <ErrorBoundary
+          key={pokemonName}
           FallbackComponent={PokemonFallbackComponent}
-          onReset={() => setPokemonName('')}
         >
           <PokemonInfo pokemonName={pokemonName} />
         </ErrorBoundary>
