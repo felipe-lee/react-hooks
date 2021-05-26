@@ -2,7 +2,6 @@
 // http://localhost:3000/isolated/exercise/06.js
 
 import * as React from 'react'
-import {ErrorBoundary} from 'react-error-boundary'
 
 import {
   fetchPokemon,
@@ -20,7 +19,7 @@ function PokemonInfo({pokemonName}) {
   const [state, setState] = React.useState({
     error: null,
     pokemon: null,
-    status: pokemonName ? PENDING : IDLE,
+    status: IDLE,
   })
 
   React.useEffect(() => {
@@ -50,22 +49,17 @@ function PokemonInfo({pokemonName}) {
       return <PokemonDataView pokemon={state.pokemon} />
     }
     case REJECTED: {
-      throw state.error
+      return (
+        <div role="alert">
+          There was an error:{' '}
+          <pre style={{whiteSpace: 'normal'}}>{state.error.message}</pre>
+        </div>
+      )
     }
     default: {
       throw new Error(`Unhandled status: ${state.status}`)
     }
   }
-}
-
-const PokemonFallbackComponent = ({error, resetErrorBoundary}) => {
-  return (
-    <div role="alert">
-      There was an error:{' '}
-      <pre style={{whiteSpace: 'normal'}}>{error.message}</pre>
-      <button onClick={resetErrorBoundary}>Try Again</button>
-    </div>
-  )
 }
 
 function App() {
@@ -80,13 +74,7 @@ function App() {
       <PokemonForm pokemonName={pokemonName} onSubmit={handleSubmit} />
       <hr />
       <div className="pokemon-info">
-        <ErrorBoundary
-          FallbackComponent={PokemonFallbackComponent}
-          onReset={() => setPokemonName('')}
-          resetKeys={[pokemonName]}
-        >
-          <PokemonInfo pokemonName={pokemonName} />
-        </ErrorBoundary>
+        <PokemonInfo pokemonName={pokemonName} />
       </div>
     </div>
   )
